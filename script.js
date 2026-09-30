@@ -1,19 +1,49 @@
-// OpenWeatherMap API Key
-const API_KEY = "YOUR_API_KEY_HERE";
+// ===============================
+// AI WEATHERWISE - SCRIPT.JS
+// ===============================
 
-async function getWeather() {
+// Your OpenWeatherMap API Key
+const API_KEY = "YOUR_API_KEY";
 
-    const city = document.getElementById("cityInput").value.trim();
+// Get HTML elements
+const searchBtn = document.getElementById("searchBtn");
+const cityInput = document.getElementById("cityInput");
+
+const cityName = document.getElementById("cityName");
+const temperature = document.getElementById("temperature");
+const weatherDescription = document.getElementById("weatherDescription");
+const humidity = document.getElementById("humidity");
+const windSpeed = document.getElementById("windSpeed");
+const weatherIcon = document.getElementById("weatherIcon");
+
+
+// ===============================
+// SEARCH WEATHER
+// ===============================
+
+searchBtn.addEventListener("click", function () {
+
+    const city = cityInput.value.trim();
 
     if (city === "") {
-        alert("Please enter a city name");
+        alert("Please enter a city name.");
         return;
     }
 
-    const url =
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+    getWeather(city);
+});
+
+
+// ===============================
+// GET WEATHER FROM API
+// ===============================
+
+async function getWeather(city) {
 
     try {
+
+        const url =
+            `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
 
         const response = await fetch(url);
 
@@ -23,116 +53,49 @@ async function getWeather() {
 
         const data = await response.json();
 
-        document.getElementById("cityName").innerText =
-            `${data.name}, ${data.sys.country}`;
+        // Display weather information
+        cityName.textContent = data.name;
 
-        document.getElementById("temperature").innerText =
-            `${Math.round(data.main.temp)} °C`;
+        temperature.textContent =
+            `${Math.round(data.main.temp)}°C`;
 
-        document.getElementById("description").innerText =
+        weatherDescription.textContent =
             data.weather[0].description;
 
-        document.getElementById("humidity").innerText =
-            `${data.main.humidity} %`;
+        humidity.textContent =
+            `${data.main.humidity}%`;
 
-        document.getElementById("wind").innerText =
+        windSpeed.textContent =
             `${data.wind.speed} m/s`;
 
-        document.getElementById("feelsLike").innerText =
-            `${Math.round(data.main.feels_like)} °C`;
+        // Weather icon
+        const iconCode = data.weather[0].icon;
 
-        updateWeatherIcon(data.weather[0].main);
+        weatherIcon.src =
+            `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 
-        generateSuggestion(
-            data.main.temp,
-            data.main.humidity,
-            data.weather[0].main
-        );
+        weatherIcon.alt =
+            data.weather[0].description;
 
-    } catch (error) {
+    }
 
-        alert("City not found. Please enter a valid city name.");
+    catch (error) {
 
-        console.log(error);
+        alert("Unable to find weather for this city.");
+
+        console.error(error);
     }
 }
 
 
-// Weather icon
-function updateWeatherIcon(condition) {
+// ===============================
+// ENTER KEY SEARCH
+// ===============================
 
-    const icon = document.getElementById("weatherIcon");
-
-    if (condition === "Clear") {
-        icon.innerText = "☀️";
-    }
-    else if (condition === "Clouds") {
-        icon.innerText = "☁️";
-    }
-    else if (condition === "Rain") {
-        icon.innerText = "🌧️";
-    }
-    else if (condition === "Thunderstorm") {
-        icon.innerText = "⛈️";
-    }
-    else if (condition === "Snow") {
-        icon.innerText = "❄️";
-    }
-    else {
-        icon.innerText = "🌤️";
-    }
-}
-
-
-// AI-style weather suggestion
-function generateSuggestion(temp, humidity, condition) {
-
-    const suggestion = document.getElementById("suggestion");
-
-    if (condition === "Rain") {
-
-        suggestion.innerText =
-            "Rain is expected. Carry an umbrella and avoid unnecessary outdoor travel.";
-
-    }
-    else if (temp >= 35) {
-
-        suggestion.innerText =
-            "The weather is very hot. Stay hydrated, avoid direct sunlight, and wear light clothing.";
-
-    }
-    else if (temp >= 28) {
-
-        suggestion.innerText =
-            "The weather is warm. Drink enough water and take breaks if you are outdoors.";
-
-    }
-    else if (temp <= 20) {
-
-        suggestion.innerText =
-            "The weather is cool. Carry a light jacket if you are going outside.";
-
-    }
-    else if (humidity >= 80) {
-
-        suggestion.innerText =
-            "Humidity is high. Stay hydrated and choose comfortable, breathable clothing.";
-
-    }
-    else {
-
-        suggestion.innerText =
-            "The weather looks comfortable. It is a good time for normal outdoor activities.";
-
-    }
-}
-
-
-// Press Enter to search
-document.getElementById("cityInput").addEventListener("keypress", function(event) {
+cityInput.addEventListener("keypress", function (event) {
 
     if (event.key === "Enter") {
-        getWeather();
+        searchBtn.click();
     }
 
 });
