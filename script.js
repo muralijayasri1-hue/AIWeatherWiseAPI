@@ -1,101 +1,266 @@
-// ===============================
-// AI WEATHERWISE - SCRIPT.JS
-// ===============================
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-// Your OpenWeatherMap API Key
-const API_KEY = "YOUR_API_KEY";
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
 
-// Get HTML elements
-const searchBtn = document.getElementById("searchBtn");
-const cityInput = document.getElementById("cityInput");
+    background:
+        linear-gradient(135deg, #74ebd5, #9face6);
 
-const cityName = document.getElementById("cityName");
-const temperature = document.getElementById("temperature");
-const weatherDescription = document.getElementById("weatherDescription");
-const humidity = document.getElementById("humidity");
-const windSpeed = document.getElementById("windSpeed");
-const weatherIcon = document.getElementById("weatherIcon");
+    padding: 30px 15px;
+}
 
+.container {
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+}
 
-// ===============================
-// SEARCH WEATHER
-// ===============================
+/* Header */
 
-searchBtn.addEventListener("click", function () {
+header {
+    text-align: center;
+    color: white;
+    margin-bottom: 25px;
+}
 
-    const city = cityInput.value.trim();
+header h1 {
+    font-size: 40px;
+    margin-bottom: 8px;
+}
 
-    if (city === "") {
-        alert("Please enter a city name.");
-        return;
+header p {
+    font-size: 17px;
+}
+
+/* Search */
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 15px;
+
+    border: none;
+    border-radius: 10px;
+
+    font-size: 16px;
+    outline: none;
+}
+
+.search-box button {
+    padding: 15px 25px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #222;
+    color: white;
+
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.search-box button:hover {
+    background: #444;
+}
+
+/* Loading */
+
+#loading {
+    display: none;
+    text-align: center;
+    color: white;
+    margin: 15px;
+}
+
+/* Error */
+
+#error {
+    display: none;
+
+    background: #ffdddd;
+    color: #b00000;
+
+    padding: 12px;
+    border-radius: 8px;
+
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Weather Result */
+
+.weather-result {
+    display: none;
+
+    background: rgba(255, 255, 255, 0.95);
+
+    padding: 30px;
+
+    border-radius: 20px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Location */
+
+.location {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.location h2 {
+    font-size: 30px;
+}
+
+/* Main Weather */
+
+.main-weather {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+}
+
+.main-weather img {
+    width: 100px;
+    height: 100px;
+}
+
+.main-weather h2 {
+    font-size: 45px;
+}
+
+.main-weather p {
+    text-transform: capitalize;
+}
+
+/* Weather Grid */
+
+.weather-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+}
+
+.weather-card {
+    background: #f3f6fa;
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+    text-align: center;
+}
+
+.weather-card span {
+    font-size: 30px;
+}
+
+.weather-card h3 {
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+.weather-card p {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* AI Box */
+
+.ai-box {
+    margin-top: 25px;
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+    background: #eef2ff;
+
+    border-left: 5px solid #555;
+}
+
+.ai-box h2 {
+    margin-bottom: 10px;
+}
+
+/* Sunrise Sunset */
+
+.sun-info {
+    display: flex;
+
+    justify-content: space-around;
+
+    text-align: center;
+
+    margin-top: 25px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #ddd;
+}
+
+/* Footer */
+
+footer {
+    text-align: center;
+
+    color: white;
+
+    margin-top: 25px;
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+    header h1 {
+        font-size: 30px;
     }
 
-    getWeather(city);
-});
-
-
-// ===============================
-// GET WEATHER FROM API
-// ===============================
-
-async function getWeather(city) {
-
-    try {
-
-        const url =
-            `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error("City not found");
-        }
-
-        const data = await response.json();
-
-        // Display weather information
-        cityName.textContent = data.name;
-
-        temperature.textContent =
-            `${Math.round(data.main.temp)}°C`;
-
-        weatherDescription.textContent =
-            data.weather[0].description;
-
-        humidity.textContent =
-            `${data.main.humidity}%`;
-
-        windSpeed.textContent =
-            `${data.wind.speed} m/s`;
-
-        // Weather icon
-        const iconCode = data.weather[0].icon;
-
-        weatherIcon.src =
-            `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-
-        weatherIcon.alt =
-            data.weather[0].description;
-
+    .search-box {
+        flex-direction: column;
     }
 
-    catch (error) {
+    .weather-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
 
-        alert("Unable to find weather for this city.");
-
-        console.error(error);
+    .main-weather h2 {
+        font-size: 35px;
     }
 }
 
+@media (max-width: 450px) {
 
-// ===============================
-// ENTER KEY SEARCH
-// ===============================
-
-cityInput.addEventListener("keypress", function (event) {
-
-    if (event.key === "Enter") {
-        searchBtn.click();
+    .weather-grid {
+        grid-template-columns: 1fr;
     }
 
-});
+    .weather-result {
+        padding: 20px;
+    }
+
+    .sun-info {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
