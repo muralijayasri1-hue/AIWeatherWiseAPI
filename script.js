@@ -1,3 +1,4 @@
+const current = weatherData.current;
 * {
     margin: 0;
     padding: 0;
